@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
+# ----------------------Get Method---------------------------
 # Home Route 
 @app.get('/')
 def home():
@@ -45,8 +47,53 @@ def get_user(limit: int=10):    # To pass Default value
 
 # Multiple Query Parameters
 @app.get('/items')
-def get_user(name: str=None, price: int=0):    # To pass Default value 
+def get_items(name: str=None, price: int=0):    # To pass Default value 
     return {
         'Name': name,
         'Price': price,
     }
+
+# ------------------------- Post method ----------------------------
+# @app.post('/create-user')
+# def create_user(user:dict):
+#     return {
+#         'message': 'User created successfully',
+#         'data': user
+#     }
+
+# @app.post('/create-user')
+# def create_user(name:str, age:int):
+#     return {
+#         'Name': name,
+#         'Age': age
+#     }
+
+# Using Pydantic 
+# Simple post method doesn't provide validation in fastAPI, so we use pydantic basemodel for this purpose  
+
+# class User(BaseModel):
+#     name: str
+#     age: int
+#     email: str
+
+# @app.post('/create-user')
+# def create_user(user:User):
+#     return {
+#         'message': 'User created successfully',
+#         'data': user
+#     }
+
+# Nested pydantic BaseModel
+class Address(BaseModel):
+    city: str
+    pincode: int
+
+class User(BaseModel):
+    name: str
+    age: int
+    address: Address
+
+@app.post('/create-user')
+def create_user(user: User):
+    return user
+
