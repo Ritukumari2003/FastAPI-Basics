@@ -97,3 +97,27 @@ class User(BaseModel):
 def create_user(user: User):
     return user
 
+# ------Path + Query Parameters + Body Combo ------------
+# PUT /product/101?notify=true
+# {
+#    "name": "Salt",
+#    "price": 24
+# }
+
+products = []
+Class Product(BaseModel):
+    name: str
+    price: int
+
+@app.post('/products')
+def create_product(product:Product):
+    products.append(product)
+    return {
+        "message": "User Created Successfully",
+        "data": user
+    }
+    
+    
+
+
+
