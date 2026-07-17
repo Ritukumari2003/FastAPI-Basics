@@ -39,11 +39,11 @@ def get_user(name: str=None):    # To pass Null value
         'Name': name,
     }
 
-@app.get('/products')
-def get_user(limit: int=10):    # To pass Default value 
-    return {
-        'Limit': limit,
-    }
+# @app.get('/products')
+# def get_user(limit: int=10):    # To pass Default value 
+#     return {
+#         'Limit': limit,
+#     }
 
 # Multiple Query Parameters
 @app.get('/items')
@@ -105,17 +105,52 @@ def create_user(user: User):
 # }
 
 products = []
-Class Product(BaseModel):
+class Product(BaseModel):
+    id: int
     name: str
     price: int
-
+    
 @app.post('/products')
 def create_product(product:Product):
     products.append(product)
     return {
         "message": "User Created Successfully",
-        "data": user
+        "data": product
     }
+
+@app.put('/products/{product_id}')
+def update_product(product_id: int, updated_product: Product, notify: bool = False):
+    for index, product in enumerate(products):
+        if product.id == product_id:
+            products[index] = updated_product
+            return {
+                "message": "Data updated successfully",
+                "notify": notify,
+                "data": updated_product
+            }
+    return {"error": "Product not found with this id!!.."}
+
+
+# -------------- Response Models & Hiding Sensitive Data --------------------
+class Login_User(BaseModel):
+    user_name: str
+    email: str
+    password: str
+
+class LoginResponse(BaseModel):
+    user_name: str
+    email: str
+
+@app.get('/login_user', response_model = LoginResponse)
+def get_login_user():
+    return {
+        "user_name":"Mohit",
+        "email": 'xyz@gmail.com', 
+        "password": "123456"
+    }
+
+
+
     
     
 
