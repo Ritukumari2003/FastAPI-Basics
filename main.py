@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -21,7 +21,7 @@ def about():
 #         "users":['Mohit', 'Rohit', 'Amit'] 
 #     }
 
-# Creating Dynamic URL 
+# -------------- Creating Dynamic URL ---------------
 
 # Path Parameters
 # Users Route 
@@ -149,10 +149,36 @@ def get_login_user():
         "password": "123456"
     }
 
+# Creating APIs in a professional way
+@app.post('/create_new_user', status_code=status.HTTP_201_CREATED)
+def create_new_user():
+    return {
+        'message': 'User Created Successfully'
+    }
 
-
+@app.get('/get_new_users')
+def get_new_users():
+    return {
+        'status': 'Success',
+        'message': 'User Fetched Successfully',
+        'data': {
+            'Name': 'Mohit', 
+            'Age': 27
+        }
+    }
     
-    
+@app.get('/get_new_user/{user_id}')
+def get_new_users(user_id:int):
+    if user_id != 1:
+        raise HTTPException(
+            status_code = 404, 
+            detail="User Not Found"
+        )
+    else:
+        return {
+            'id': 1,
+            'Name': 'Mohit'
+        }   
 
 
 
