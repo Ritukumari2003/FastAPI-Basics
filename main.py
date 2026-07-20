@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status, HTTPException
+from fastapi import FastAPI, status, HTTPException, Depends, Header
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -168,7 +168,7 @@ def get_new_users():
     }
     
 @app.get('/get_new_user/{user_id}')
-def get_new_users(user_id:int):
+def get_new_user(user_id:int):
     if user_id != 1:
         raise HTTPException(
             status_code = 404, 
@@ -179,6 +179,49 @@ def get_new_users(user_id:int):
             'id': 1,
             'Name': 'Rohit'
         }   
+
+#-------------- Dependency Injection ----------------
+
+# def common_logic():
+#     return {
+#         'message': 'Common Logic Executed'
+#     }
+
+# @app.get('/home')
+# def home(data = Depends(common_logic)):
+#     return data
+
+# def get_current_user():
+#     return {
+#         'user': 'Mohit'
+#     }
+
+# @app.get('/profile')
+# def profile(user = Depends(get_current_user)):
+#     return user
+
+# @app.get('/dashboard')
+# def dashboard(user = Depends(get_current_user)):
+#     return user
+
+def verify_user(token:str = Header(None)):
+    if token != 'mysecrettoken':
+        raise HTTPException(
+            status_code=401,
+            detail = 'Unauthorized'
+        )
+    return {
+        'user': 'Authorised User'
+    }
+
+@app.get('/secure-data')
+def secure_data(user = Depends(verify_user)):
+    return{
+        'message': 'Secure Data Accessed',
+        'user': user
+    }
+
+
 
 
 
