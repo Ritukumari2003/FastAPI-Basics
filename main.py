@@ -177,7 +177,7 @@ def get_new_users(user_id:int):
     else:
         return {
             'id': 1,
-            'Name': 'Mohit'
+            'Name': 'Rohit'
         }   
 
 
